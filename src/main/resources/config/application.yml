@@ -1,0 +1,5 @@
+spring.application.name: music-calendar
+
+songkick:
+  url: https://api.songkick.com
+  api-key: test
