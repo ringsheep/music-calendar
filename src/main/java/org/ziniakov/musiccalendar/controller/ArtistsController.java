@@ -19,12 +19,12 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 public class ArtistsController {
 
     @Value("${songkick.api-key}")
-    String apiKey;
+    private String apiKey;
 
-    SongkickGateway gateway;
+    private final SongkickGateway gateway;
 
     @GetMapping(path = "/search", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     public List<Artist> searchArtists(@RequestParam String query) {
-        return gateway.searchArtists(apiKey, query).getResults().getArtists();
+        return gateway.searchArtists(apiKey, query).getResultsPage().getResults().getArtists();
     }
 }

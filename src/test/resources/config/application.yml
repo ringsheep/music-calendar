@@ -1,5 +1,5 @@
 spring.application.name: music-calendar
 
 songkick:
-  url: https://api.songkick.com
+  url: http://localhost
   api-key: api-key

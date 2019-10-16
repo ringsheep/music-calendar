@@ -3,7 +3,7 @@ package org.ziniakov.musiccalendar.gateway;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.ziniakov.musiccalendar.dto.songkick.ResultsPage;
+import org.ziniakov.musiccalendar.dto.songkick.Response;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -17,7 +17,7 @@ public interface SongkickGateway {
     String QUERY_PARAM = "query";
 
     @GetMapping(value = "/api/3.0/search/artists.json", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    ResultsPage searchArtists(
+    Response searchArtists(
             @RequestParam(API_KEY_PARAM) String apiKey,
             @RequestParam(QUERY_PARAM) String query);
 }
