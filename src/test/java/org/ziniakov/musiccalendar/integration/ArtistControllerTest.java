@@ -38,10 +38,11 @@ public class ArtistControllerTest {
     @Test
     public void shouldReturnArtists() throws Throwable {
         Response response = objectMapper.readValue(readFileFromResources("__files/songkick-api/artists_search.json"), Response.class);
-        doReturn(response).when(songkickGateway).searchArtists("api-key", "Radiohead");
+        doReturn(response).when(songkickGateway).searchArtists("api-key", 1, "Radiohead");
 
         mockMvc.perform(get("/v1/artists/search")
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                .param("page", "1")
                 .param("query", "Radiohead"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
