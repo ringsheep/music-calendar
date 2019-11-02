@@ -18,6 +18,7 @@ import org.ziniakov.musiccalendar.service.ArtistsService;
 
 import java.io.File;
 
+import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.Mockito.doReturn;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -29,6 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Import(ArtistsService.class)
 public class ArtistControllerTest {
 
+    public static final String API_KEY = "api-key";
     @Autowired
     MockMvc mockMvc;
 
@@ -39,9 +41,9 @@ public class ArtistControllerTest {
     SongkickGateway songkickGateway;
 
     @Test
-    public void shouldReturnArtists() throws Throwable {
+    public void search_should_return_artists() throws Throwable {
         Response response = objectMapper.readValue(readFileFromResources("__files/songkick-api/artists_search.json"), Response.class);
-        doReturn(response).when(songkickGateway).searchArtists("api-key", 1, "Radiohead");
+        doReturn(response).when(songkickGateway).searchArtists(API_KEY, 1, "Radiohead");
 
         mockMvc.perform(get("/v1/artists/search")
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -53,6 +55,30 @@ public class ArtistControllerTest {
                 .andExpect(jsonPath("[0].uri").value("http://www.songkick.com/artists/253846-radiohead"))
                 .andExpect(jsonPath("[0].displayName").value("Radiohead"));
 
+    }
+
+    @Test
+    public void getUserTracked_should_return_tracked_artists() throws Throwable {
+        setupGetUserTrackedArtistsResponse(1, "__files/songkick-api/artists_tracked_page_1.json");
+        setupGetUserTrackedArtistsResponse(2, "__files/songkick-api/artists_tracked_page_2.json");
+        setupGetUserTrackedArtistsResponse(3, "__files/songkick-api/artists_tracked_empty.json");
+
+        mockMvc.perform(get("/v1/artists/getUserTracked")
+                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                .param("username", "ringsheep"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(jsonPath("$", hasSize(100)))
+                .andExpect(jsonPath("[0].id").value(446407))
+                .andExpect(jsonPath("[0].uri").value("http://www.songkick.com/artists/446407-23-skidoo?utm_source=59058&utm_medium=partner"))
+                .andExpect(jsonPath("[0].displayName").value("23 Skidoo"));
+
+    }
+
+    @SneakyThrows
+    private void setupGetUserTrackedArtistsResponse(int page, String filePath) {
+        Response response = objectMapper.readValue(readFileFromResources(filePath), Response.class);
+        doReturn(response).when(songkickGateway).getUserTrackedArtists(API_KEY, page, "ringsheep");
     }
 
     @SneakyThrows
