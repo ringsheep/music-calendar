@@ -7,7 +7,9 @@ import org.ziniakov.musiccalendar.dto.songkick.Artist;
 import org.ziniakov.musiccalendar.gateway.SongkickGateway;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -25,25 +27,23 @@ public class ArtistsService {
     }
 
     public List<Artist> getUserTracked(String username) {
-        int page = FIRST_PAGE;
-        List<Artist> foundArtists = getUserTracked(page, username);
-        List<Artist> resultingArtists = new ArrayList<>(foundArtists);
-
-        while (!foundArtists.isEmpty()) {
-            page += 1;
-            foundArtists = getUserTracked(page, username);
-            resultingArtists.addAll(foundArtists);
-        }
-
-        return resultingArtists;
+        return getUserTracked(FIRST_PAGE, username);
     }
 
     public void save(List<Artist> artists) {
         // TODO: implement
     }
 
-    private List<Artist> getUserTracked(int page, String username) {
-        return gateway.getUserTrackedArtists(apiKey, page, username).getResultsPage().getResults().getArtists();
+    private List<Artist> getUserTracked(int startPage, String username) {
+        List<Artist> foundArtists = gateway.getUserTrackedArtists(apiKey, startPage, username).getResultsPage().getResults().getArtists();
+        List<Artist> resultingArtists = new ArrayList<>();
+
+        if (!Optional.ofNullable(foundArtists).orElse(Collections.emptyList()).isEmpty()) {
+            resultingArtists.addAll(foundArtists);
+            resultingArtists.addAll(getUserTracked(startPage + 1, username));
+        }
+
+        return resultingArtists;
     }
 
 }
