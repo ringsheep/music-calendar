@@ -14,6 +14,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.ziniakov.musiccalendar.controller.ArtistsController;
 import org.ziniakov.musiccalendar.dto.songkick.Response;
 import org.ziniakov.musiccalendar.gateway.SongkickGateway;
+import org.ziniakov.musiccalendar.repository.ArtistsRepository;
 import org.ziniakov.musiccalendar.service.ArtistsService;
 
 import java.io.File;
@@ -39,6 +40,9 @@ public class ArtistControllerTest {
 
     @MockBean
     SongkickGateway songkickGateway;
+
+    @MockBean
+    ArtistsRepository artistsRepository;
 
     @Test
     public void search_should_return_artists() throws Throwable {

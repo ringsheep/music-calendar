@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class ArtistsService {
+public class ArtistService {
 
     private static final int FIRST_PAGE = 1;
 
@@ -41,7 +41,7 @@ public class ArtistsService {
     public void save(List<Artist> artists) {
         artistRepository.saveAll(
                 artists.stream()
-                        .map(artistMapper::mapToJpaArtist)
+                        .map(artistMapper::mapToDomainArtist)
                         .collect(Collectors.toList())
         );
     }

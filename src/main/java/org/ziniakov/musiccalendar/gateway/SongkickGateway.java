@@ -29,5 +29,11 @@ public interface SongkickGateway {
             @RequestParam(API_KEY_PARAM) String apiKey,
             @RequestParam(PAGE_PARAM) int page,
             @PathVariable String username);
+
+    @GetMapping(value = "/api/3.0/users/{username}/artists/tracked.json", consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
+    Response getArtistsEvents(
+            @RequestParam(API_KEY_PARAM) String apiKey,
+            @RequestParam(PAGE_PARAM) int page,
+            @PathVariable String artistId);
 }
 

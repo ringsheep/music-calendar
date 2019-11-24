@@ -10,4 +10,8 @@ public class Results {
 
     @JsonProperty("artist")
     List<Artist> artists;
+
+    @JsonProperty("events")
+    List<Event> events;
+
 }
